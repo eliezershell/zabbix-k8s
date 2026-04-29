@@ -1,6 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
+metadata:
   name: mysql
   labels:
     app.kubernetes.io/name: mysql
@@ -27,7 +27,9 @@ spec:
       - name: mysql
         image: mysql:8.0-oracle@sha256:a3dff78d876222746a0bacc36dd7e4bf9e673c85fb7ee0d12ed25bd32c43c19b
         ports:
-        - containerPort: 3306
+        - name: mysql
+          containerPort: 3306
+          protocol: TCP
         args:
           - --character-set-server=utf8
           - --collation-server=utf8_bin
@@ -38,23 +40,23 @@ spec:
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-database
+              name: mysql-credentials
+              key: database
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-user 
+              name: mysql-credentials
+              key: user 
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-password
+              name: mysql-credentials
+              key: password
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-root-password
+              name: mysql-credentials
+              key: root-password
         resources:
           requests:
             memory: "256Mi"
