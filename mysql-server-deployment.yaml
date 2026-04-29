@@ -26,11 +26,6 @@ spec:
           - --log-bin=mysql-bin
           - --log_bin_trust_function_creators=1
         env:
-        - name: DB_URL
-          valueFrom:
-            configMapKeyRef:
-              name: mysql-config
-              key: mysql-host
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:

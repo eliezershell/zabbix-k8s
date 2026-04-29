@@ -1,29 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
-  name: zabbix-server
+metadata:
+  name: zabbix-frontend
   labels:
-    app: zabbix-server
+    app: zabbix-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: zabbix-server
+      app: zabbix-frontend
   template:
     metadata:
       labels:
-        app: zabbix-server
+        app: zabbix-frontend
     spec:
       containers:
-      - name: zabbix-server
-        image: zabbix/zabbix-server-mysql:alpine-7.4-latest@sha256:39aef12921f6e4572984164164ab1cbb7acc2058e349ff1fb622b48f0280e2f3
+      - name: zabbix-frontend
+        image: zabbix/zabbix-web-nginx-mysql:alpine-7.4-latest@sha256:374bc99b4cf49191c3fbd6c78fd5c8cecd1cb5963b73638aacc46ea6759204a5
         ports:
-        - containerPort: 10051
+        - containerPort: 8080
         env:
+        - name: ZBX_SERVER_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: zabbix-server-host
         - name: DB_URL
           valueFrom:
             configMapKeyRef:
-              name: mysql-config
+              name: svc-config
               key: mysql-host
         - name: MYSQL_DATABASE
           valueFrom:
