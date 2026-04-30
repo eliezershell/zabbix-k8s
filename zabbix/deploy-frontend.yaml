@@ -36,7 +36,7 @@ spec:
             configMapKeyRef:
               name: zbx-config
               key: zbx-server-host
-        - name: DB_URL
+        - name: DB_SERVER_HOST
           valueFrom:
             configMapKeyRef:
               name: mysql-config

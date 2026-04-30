@@ -31,7 +31,7 @@ spec:
           containerPort: 10051
           protocol: TCP
         env:
-        - name: DB_URL
+        - name: DB_SERVER_HOST
           valueFrom:
             configMapKeyRef:
               name: mysql-config
