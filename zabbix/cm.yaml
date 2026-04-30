@@ -1,10 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: svc-config
+  name: zbx-config
   labels:
     app.kubernetes.io/part-of: observability
     app.kubernetes.io/managed-by: argocd
 data:
-  mysql-host: "mysql-svc"
   zbx-server-host: "zabbix-server-svc"

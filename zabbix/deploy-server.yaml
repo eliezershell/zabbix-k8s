@@ -1,45 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata:
-  name: zabbix-frontend
+metadata: 
+  name: zabbix-server
   labels:
-    app.kubernetes.io/name: zabbix-frontend
+    app.kubernetes.io/name: zabbix-server
     app.kubernetes.io/version: "7.4"
-    app.kubernetes.io/component: frontend
+    app.kubernetes.io/component: server
     app.kubernetes.io/part-of: observability
     app.kubernetes.io/managed-by: argocd
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: zabbix-frontend
-      app.kubernetes.io/component: frontend
+      app.kubernetes.io/name: zabbix-server
+      app.kubernetes.io/component: backend
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: zabbix-frontend
+        app.kubernetes.io/name: zabbix-server
         app.kubernetes.io/version: "7.4"
-        app.kubernetes.io/component: frontend
+        app.kubernetes.io/component: backend
         app.kubernetes.io/part-of: observability
         app.kubernetes.io/managed-by: argocd
     spec:
       containers:
-      - name: zabbix-frontend
-        image: zabbix/zabbix-web-nginx-mysql:alpine-7.4-latest@sha256:374bc99b4cf49191c3fbd6c78fd5c8cecd1cb5963b73638aacc46ea6759204a5
+      - name: zabbix-server
+        image: zabbix/zabbix-server-mysql:alpine-7.4-latest@sha256:39aef12921f6e4572984164164ab1cbb7acc2058e349ff1fb622b48f0280e2f3
         ports:
-        - name: http
-          containerPort: 8080
+        - name: zabbix-trapper
+          containerPort: 10051
           protocol: TCP
         env:
-        - name: ZBX_SERVER_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: svc-config
-              key: zbx-server-host
         - name: DB_URL
           valueFrom:
             configMapKeyRef:
-              name: svc-config
+              name: mysql-config
               key: mysql-host
         - name: MYSQL_DATABASE
           valueFrom:
