@@ -59,8 +59,8 @@ spec:
               key: root-password
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "250m"
+            memory: "512Mi"
+            cpu: "500m"
           limits:
             memory: "2048Mi"
             cpu: "1000m"
