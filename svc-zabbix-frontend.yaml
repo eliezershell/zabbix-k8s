@@ -2,10 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zabbix-frontend-svc
+  labels:
+    app.kubernetes.io/part-of: observability
+    app.kubernetes.io/managed-by: argocd
 spec:
   selector:
-    app: zabbix-frontend
+    app.kubernetes.io/name: zabbix-frontend
+    app.kubernetes.io/component: frontend
   ports:
-    - protocol: TCP
+    - name: zabbix-frontend
+      protocol: TCP
       port: 8080
-      targetPort: 8080
+      targetPort: mysql

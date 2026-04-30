@@ -3,28 +3,39 @@ kind: Deployment
 metadata:
   name: zabbix-frontend
   labels:
-    app: zabbix-frontend
+    app.kubernetes.io/name: zabbix-frontend
+    app.kubernetes.io/version: "7.4"
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: observability
+    app.kubernetes.io/managed-by: argocd
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: zabbix-frontend
+      app.kubernetes.io/name: zabbix-frontend
+      app.kubernetes.io/component: frontend
   template:
     metadata:
       labels:
-        app: zabbix-frontend
+        app.kubernetes.io/name: zabbix-frontend
+        app.kubernetes.io/version: "7.4"
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/part-of: observability
+        app.kubernetes.io/managed-by: argocd
     spec:
       containers:
       - name: zabbix-frontend
         image: zabbix/zabbix-web-nginx-mysql:alpine-7.4-latest@sha256:374bc99b4cf49191c3fbd6c78fd5c8cecd1cb5963b73638aacc46ea6759204a5
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
+          protocol: TCP
         env:
         - name: ZBX_SERVER_HOST
           valueFrom:
             configMapKeyRef:
               name: svc-config
-              key: zabbix-server-host
+              key: zbx-server-host
         - name: DB_URL
           valueFrom:
             configMapKeyRef:
@@ -33,23 +44,23 @@ spec:
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-database
+              name: mysql-credentials
+              key: database
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-user 
+              name: mysql-credentials
+              key: user 
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-password
+              name: mysql-credentials
+              key: password
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-root-password
+              name: mysql-credentials
+              key: root-password
         resources:
           requests:
             memory: "256Mi"

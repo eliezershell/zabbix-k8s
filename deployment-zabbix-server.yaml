@@ -3,22 +3,33 @@ kind: Deployment
 metadata: 
   name: zabbix-server
   labels:
-    app: zabbix-server
+    app.kubernetes.io/name: zabbix-server
+    app.kubernetes.io/version: "7.4"
+    app.kubernetes.io/component: server
+    app.kubernetes.io/part-of: observability
+    app.kubernetes.io/managed-by: argocd
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: zabbix-server
+      app.kubernetes.io/name: zabbix-server
+      app.kubernetes.io/component: backend
   template:
     metadata:
       labels:
-        app: zabbix-server
+        app.kubernetes.io/name: zabbix-server
+        app.kubernetes.io/version: "7.4"
+        app.kubernetes.io/component: backend
+        app.kubernetes.io/part-of: observability
+        app.kubernetes.io/managed-by: argocd
     spec:
       containers:
       - name: zabbix-server
         image: zabbix/zabbix-server-mysql:alpine-7.4-latest@sha256:39aef12921f6e4572984164164ab1cbb7acc2058e349ff1fb622b48f0280e2f3
         ports:
-        - containerPort: 10051
+        - name: zabbix-trapper
+          containerPort: 10051
+          protocol: TCP
         env:
         - name: DB_URL
           valueFrom:
@@ -28,23 +39,23 @@ spec:
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-database
+              name: mysql-credentials
+              key: database
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-user 
+              name: mysql-credentials
+              key: user 
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-password
+              name: mysql-credentials
+              key: password
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
-              key: mysql-root-password
+              name: mysql-credentials
+              key: root-password
         resources:
           requests:
             memory: "256Mi"
